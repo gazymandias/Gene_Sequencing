@@ -9,7 +9,7 @@ def gene_slicer(genetic_code):
             if current_gene not in genes:
                 genes.append(current_gene)
         for gene in genes:
-            print(gene + ":" + str(genetic_code.count(gene)))
+            print(f"{gene}: {genetic_code.count(gene)}")
     else:
         print("please input a valid genetic sequence")
 
