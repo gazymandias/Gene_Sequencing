@@ -2,23 +2,32 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"math/rand"
 	"strings"
+	"sync"
 	"time"
 )
 
 func main() {
-	n := 0
-	for n < 10000000 {
+	var wg sync.WaitGroup
+	ch := make(chan struct{}, 100)
+	n := 100000
+	for n > 0 {
+		ch <- struct{}{}
+		wg.Add(1)
 		// var genetic_code = "cgcagacgcgcaagcagattttataaagccaatgtatatacaactcctaccaggccaaacaaggtccgcgcacacgaaacctggaaaactttgtgtcggc"
 		var genetic_code = DummyGeneticCode(50)
 		if !basesOnly(genetic_code) {
-			fmt.Println("Please input a valid genetic sequence.")
+			log.Println("Please input a valid genetic sequence.")
 		} else {
-			go fmt.Println(sequence(genetic_code))
+			go func(n int) {
+				log.Println(sequence(genetic_code))
+				defer wg.Done()
+				<-ch
+			}(n)
 		}
-		n += 1
+		n -= 1
 	}
 }
 
